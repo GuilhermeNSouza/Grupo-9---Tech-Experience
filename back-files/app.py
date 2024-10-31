@@ -1,29 +1,26 @@
 from flask import Flask, jsonify, request
-from datetime import datetime
 import sqlite3
 from flask_cors import CORS
+from datetime import datetime
+import pandas as pd
 
 app = Flask(__name__)
-CORS(app) 
+CORS(app)  # Habilita CORS para permitir requisições de origens diferentes
 
 DATABASE = 'database.db'
-
-# Database connection function
+# Função para conectar ao banco de dados
 def connection_database():
     connection = sqlite3.connect(DATABASE)
     connection.row_factory = sqlite3.Row
     return connection
-
-# API route to get sales report with optional minimum value filter
+# Rota da API para obter o relatório de vendas
 @app.route('/api/vendas', methods=['GET'])
 def obter_vendas():
     try:
-        # Get date parameters from request
+        # Obtém os parâmetros de data e valor mínimo da requisição
         data_inicio = request.args.get('data_inicio')
         data_fim = request.args.get('data_fim')
-        valor_minimo = request.args.get('valor_minimo', type=float, default=0.0)  # Default to 0 if not provided
-        
-        # Validate date format and check if dates are in the future
+        valor_minimo = request.args.get('valor_minimo', type=float, default=0.0) 
         try:
             data_inicio_dt = datetime.strptime(data_inicio, '%Y-%m-%d')
             data_fim_dt = datetime.strptime(data_fim, '%Y-%m-%d')
@@ -34,15 +31,13 @@ def obter_vendas():
         except ValueError:
             return jsonify({'erro': 'Formato de data inválido. Utilize AAAA-MM-DD.'}), 400
         
-        # Convert dates to timestamps in milliseconds for SQL query
         data_inicio_timestamp = int(data_inicio_dt.timestamp() * 1000)
         data_fim_timestamp = int(data_fim_dt.timestamp() * 1000)
         
-        # Connect to database
         conn = connection_database()
         cursor = conn.cursor()
         
-        # SQL query to get sales report with date filter and minimum value filter
+
         query = '''
             SELECT
                 p.nome AS nome_produto,
@@ -67,7 +62,6 @@ def obter_vendas():
         cursor.execute(query, (data_inicio_timestamp, data_fim_timestamp, valor_minimo))
         resultado = cursor.fetchall()
         
-        # Create list of results
         vendas = []
         for row in resultado:
             vendas.append({
@@ -77,13 +71,105 @@ def obter_vendas():
                 'total_vendas': row['total_vendas']
             })
         
-        # Close connection
         conn.close()
         
         return jsonify(vendas), 200
     except Exception as e:
         print(f"Erro: {e}")
         return jsonify({'erro': str(e)}), 500
+@app.route('/api/notificacoes-validade', methods=['GET'])
+def notificacoes_validade():
+    try:
+        conn = connection_database()
+        cursor = conn.cursor()
+        
+        # Consulta SQL para buscar todos os produtos ordenados pela data de validade
+        query = '''
+            SELECT
+                nome,
+                estoqueAtual,
+                dataValidade
+            FROM
+                produto
+            ORDER BY
+                dataValidade ASC
+        '''
+        cursor.execute(query)
+        produtos = cursor.fetchall()
+        
+        notificacoes = []
+        for produto in produtos:
+            notificacoes.append({
+                'nome': produto['nome'],
+                'quantidade': produto['estoqueAtual'],
+                'validade': produto['dataValidade']
+            })
+        
+        conn.close()
+        
+        return jsonify(notificacoes), 200
+    except Exception as e:
+        print(f"Erro: {e}")
+        return jsonify({'erro': str(e)}), 500
+def prever_demanda_mensal_simples(dados_vendas, periodo_previsao):
+    """
+    Função para prever a demanda com uma média dos últimos dados históricos.
+    Se o valor da previsão for negativo, ele será substituído por zero.
+    """
+    # Calcula a média dos últimos valores de vendas
+    media_demanda = dados_vendas['quantidade'].tail(30).mean()
+    
+    # Multiplica a média pelo período de previsão (30 dias) para obter a previsão mensal
+    total_previsto = max(0, round(media_demanda * periodo_previsao))  # Garante que seja no mínimo zero
+    return total_previsto
+
+@app.route('/api/previsao_demanda_mensal', methods=['GET'])
+def previsao_demanda_mensal():
+    try:
+        # Define o período de previsão para 1 mês (30 dias)
+        periodo_previsao = 30
+
+        # Conecta ao banco e busca os dados históricos de vendas de todos os produtos
+        conn = connection_database()
+        query = '''
+            SELECT p.nome AS produtoNome, v.dataVenda AS data, vp.quantidadeProduto AS quantidade
+            FROM VendaProduto vp
+            JOIN Venda v ON vp.vendaId = v.id
+            JOIN Produto p ON vp.produtoId = p.id
+            ORDER BY p.nome, v.dataVenda
+        '''
+        dados = pd.read_sql_query(query, conn)
+        conn.close()
+        
+        # Verifica se os dados foram carregados corretamente
+        print("Dados carregados do banco:", dados.head())
+
+        # Dicionário para armazenar previsões por produto
+        previsoes_mensais = {}
+
+        # Processar previsões por produto
+        for produto_nome, dados_produto in dados.groupby('produtoNome'):
+            if len(dados_produto) < 10:
+                previsoes_mensais[produto_nome] = {'erro': 'Dados insuficientes para previsão.'}
+                continue
+
+            # Calcula a previsão agregada para o próximo mês usando média simples
+            total_previsto = prever_demanda_mensal_simples(dados_produto, periodo_previsao)
+                
+            # Armazena o total previsto para o produto
+            previsoes_mensais[produto_nome] = {
+                'produto': produto_nome,
+                'total_previsto_proximo_mes': total_previsto
+            }
+
+        # Transforma o dicionário de previsões em uma lista e ordena pela quantidade total prevista
+        previsoes_ordenadas = sorted(previsoes_mensais.values(), key=lambda x: x.get('total_previsto_proximo_mes', 0), reverse=True)
+
+        return jsonify(previsoes_ordenadas), 200
+    except Exception as e:
+        print(f"Erro geral na rota /api/previsao_demanda_mensal: {e}")
+        return jsonify({'erro': str(e)}), 500
+
 
 if __name__ == '__main__':
     app.run(debug=True, port=8080)
