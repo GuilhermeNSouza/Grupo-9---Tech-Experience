@@ -4,26 +4,22 @@ import sqlite3
 from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app) 
+CORS(app)  # Habilita CORS para permitir requisições de origens diferentes
 
 DATABASE = 'database.db'
-
-# Database connection function
+# Função para conectar ao banco de dados
 def connection_database():
     connection = sqlite3.connect(DATABASE)
     connection.row_factory = sqlite3.Row
     return connection
-
-# API route to get sales report with optional minimum value filter
+# Rota da API para obter o relatório de vendas
 @app.route('/api/vendas', methods=['GET'])
 def obter_vendas():
     try:
-        # Get date parameters from request
+        # Obtém os parâmetros de data e valor mínimo da requisição
         data_inicio = request.args.get('data_inicio')
         data_fim = request.args.get('data_fim')
-        valor_minimo = request.args.get('valor_minimo', type=float, default=0.0)  # Default to 0 if not provided
-        
-        # Validate date format and check if dates are in the future
+        valor_minimo = request.args.get('valor_minimo', type=float, default=0.0) 
         try:
             data_inicio_dt = datetime.strptime(data_inicio, '%Y-%m-%d')
             data_fim_dt = datetime.strptime(data_fim, '%Y-%m-%d')
@@ -34,15 +30,13 @@ def obter_vendas():
         except ValueError:
             return jsonify({'erro': 'Formato de data inválido. Utilize AAAA-MM-DD.'}), 400
         
-        # Convert dates to timestamps in milliseconds for SQL query
         data_inicio_timestamp = int(data_inicio_dt.timestamp() * 1000)
         data_fim_timestamp = int(data_fim_dt.timestamp() * 1000)
         
-        # Connect to database
         conn = connection_database()
         cursor = conn.cursor()
         
-        # SQL query to get sales report with date filter and minimum value filter
+
         query = '''
             SELECT
                 p.nome AS nome_produto,
@@ -67,7 +61,6 @@ def obter_vendas():
         cursor.execute(query, (data_inicio_timestamp, data_fim_timestamp, valor_minimo))
         resultado = cursor.fetchall()
         
-        # Create list of results
         vendas = []
         for row in resultado:
             vendas.append({
@@ -77,7 +70,6 @@ def obter_vendas():
                 'total_vendas': row['total_vendas']
             })
         
-        # Close connection
         conn.close()
         
         return jsonify(vendas), 200
