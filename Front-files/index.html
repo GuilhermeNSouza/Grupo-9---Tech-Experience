@@ -6,8 +6,6 @@
     <link rel="stylesheet" href="css/styles.css">
     <!-- Font Awesome para ícones -->
     <script src="https://kit.fontawesome.com/55aafedf42.js" crossorigin="anonymous"></script>
-    <!-- Chart.js para gráficos -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <!-- Sidebar Minimalista -->
@@ -37,7 +35,7 @@
     <!-- Conteúdo Principal -->
     <div class="main-content">
         <header>
-            <h1>Supermercado Garibaldi</h1>
+            <h1>Supermercado Garibaldi - Inventário</h1>
         </header>
 
         <main>
@@ -46,51 +44,38 @@
                 <h2>Relatório de Vendas</h2>
                 <form id="form-relatorio">
                     <div class="form-group">
-                        <label for="start_date">Data Inicial:</label>
-                        <input type="date" id="start_date" name="start_date" required>
+                        <label for="data_comeco">Data Inicial:</label>
+                        <input type="date" id="data_comeco" placeholder="Data de Início">
                     </div>
                     
                     <div class="form-group">
-                        <label for="end_date">Data Final:</label>
-                        <input type="date" id="end_date" name="end_date" required>
+                        <label for="fim_data">Data Final:</label>
+                        <input type="date" id="fim_data" placeholder="Data de Fim">
                     </div>
                     
-                    <button type="submit">Gerar Relatório</button>
+                    <button id="Gerar_relatorio" type="button">Gerar Relatório</button>
                 </form>
-                <div id="resultado-relatorio"></div>
-                <canvas id="chart-relatorio" style="display:none; max-width: 100%; margin-top: 20px;"></canvas>
-            </section>
 
-            <!-- Alerta de Produtos Próximos da Validade -->
-            <section id="alerta-validade">
-                <h2>Alerta de Validade</h2>
-                <button id="btn-alerta">Verificar Alertas</button>
-                <div id="resultado-alerta"></div>
-            </section>
-
-            <!-- Previsão de Demanda -->
-            <section id="previsao-demanda">
-                <h2>Previsão de Demanda</h2>
-                <form id="form-previsao">
-                    <div class="form-group">
-                        <label for="produto_id">ID do Produto:</label>
-                        <input type="number" id="produto_id" name="produto_id" required min="1">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="periodo">Período (dias):</label>
-                        <input type="number" id="periodo" name="periodo" value="30" min="1">
-                    </div>
-                    
-                    <button type="submit">Obter Previsão</button>
-                </form>
-                <div id="resultado-previsao"></div>
-                <canvas id="chart-previsao" style="display:none; max-width: 100%; margin-top: 20px;"></canvas>
+                <!-- Tabela Estilizada -->
+                <div id="resultado-relatorio" class="styled-table">
+                    <table id="tabela-relatorio">
+                        <thead>
+                            <tr>
+                                <th>Produto</th>
+                                <th>Estoque Atual</th>
+                                <th>Quantidade Vendida</th>
+                                <th>Total de Vendas</th>
+                            </tr>
+                        </thead>
+                        <tbody id="relatorio-corpo">
+                            <!-- Dados do relatório serão inseridos aqui -->
+                        </tbody>
+                    </table>
+                </div>
             </section>
         </main>
-
     </div>
-
     <script src="js/scripts.js"></script>
+    <script src="js/relatorio_vendas.js"></script>
 </body>
 </html>
