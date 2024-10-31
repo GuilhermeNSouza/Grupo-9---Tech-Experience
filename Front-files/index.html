@@ -29,6 +29,12 @@
                     <span class="menu-text">Previsão de Demanda</span>
                 </a>
             </li>
+            <li>
+                <a href="#" onclick="mostrarSecao('notificacoes-validade')">
+                    <i class="fas fa-bell"></i>
+                    <span class="menu-text">Notificações de Validade</span>
+                </a>
+            </li>
         </ul>
     </div>
 
@@ -74,8 +80,11 @@
                 </div>
             </section>
             <section id="alerta-validade" style="display: none;">
+                <input type="text" id="filtro-notificacoes" placeholder="Pesquisar produto..." onkeyup="filtrarNotificacoes()">
+
                 <h2>Alerta de Validade</h2>
-                <!-- Conteúdo da seção de Alerta de Validade -->
+                <div id="lista-notificacoes">
+                </div>
             </section>
     
             <!-- Previsão de Demanda -->
@@ -83,9 +92,15 @@
                 <h2>Previsão de Demanda</h2>
                 <!-- Conteúdo da seção de Previsão de Demanda -->
             </section>
+            <section id="notificacoes-validade" style="display: none;">
+                <h2>Notificações de Validade</h2>
+                <div id="lista-notificacoes">
+                </div>
+            </section>
         </main>
     </div>
     <script src="js/scripts.js"></script>
     <script src="js/relatorio_vendas.js"></script>
+    <script src="js/buscar_notificacoes.js"></script>
 </body>
 </html>

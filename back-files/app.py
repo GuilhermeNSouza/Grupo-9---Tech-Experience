@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, request
-from datetime import datetime
 import sqlite3
 from flask_cors import CORS
+from datetime import datetime, timedelta
 
 app = Flask(__name__)
 CORS(app)  # Habilita CORS para permitir requisições de origens diferentes
@@ -73,6 +73,41 @@ def obter_vendas():
         conn.close()
         
         return jsonify(vendas), 200
+    except Exception as e:
+        print(f"Erro: {e}")
+        return jsonify({'erro': str(e)}), 500
+@app.route('/api/notificacoes-validade', methods=['GET'])
+def notificacoes_validade():
+    try:
+        # Conecta ao banco de dados
+        conn = connection_database()
+        cursor = conn.cursor()
+        
+        # Consulta SQL para buscar todos os produtos ordenados pela data de validade
+        query = '''
+            SELECT
+                nome,
+                estoqueAtual,
+                dataValidade
+            FROM
+                produto
+            ORDER BY
+                dataValidade ASC
+        '''
+        cursor.execute(query)
+        produtos = cursor.fetchall()
+        
+        notificacoes = []
+        for produto in produtos:
+            notificacoes.append({
+                'nome': produto['nome'],
+                'quantidade': produto['estoqueAtual'],
+                'validade': produto['dataValidade']
+            })
+        
+        conn.close()
+        
+        return jsonify(notificacoes), 200
     except Exception as e:
         print(f"Erro: {e}")
         return jsonify({'erro': str(e)}), 500
