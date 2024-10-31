@@ -37,6 +37,7 @@ body {
     color: #ffffff;
     text-decoration: none;
     display: flex;
+    font-size: 17px;
     align-items: center;
     padding: 10px 20px;
     transition: background-color 0.3s ease;
@@ -246,4 +247,167 @@ button:hover {
 #tabela-previsao-todos th {
     background-color: #f2f2f2;
     font-weight: bold;
+}
+/* Estilos para Notificações de Validade */
+.notificacao {
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilo para o alerta de produtos próximos da validade */
+.alerta-validade {
+    border: 1px solid #f39c12;
+    background-color: #fdf2e6; /* Fundo laranja suave */
+}
+
+/* Estilo para o alerta de produtos já vencidos */
+.alerta-vencido {
+    border: 2px solid #e74c3c; /* Borda vermelha intensa */
+    background-color: #ffe6e6; /* Fundo vermelho claro */
+    color: #e74c3c; /* Texto em vermelho para destaque */
+}
+
+.notificacao h3 {
+    color: inherit; /* Herdará a cor definida pela classe */
+    margin-bottom: 5px;
+}
+
+.notificacao p {
+    color: inherit; /* Herdará a cor definida pela classe */
+    margin: 3px 0;
+}
+
+.dashboard-container {
+    width: 90%;
+    max-width: 1200px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.info-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    width: 100%;
+}
+
+.info-card {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.info-card h3 {
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.info-card p {
+    font-size: 24px;
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+/* Estilo para os cards de alerta */
+.alerta-vencidos {
+    background-color: #ffe6e6;
+    border-left: 4px solid #e74c3c;
+}
+
+.alerta-validade {
+    background-color: #fdf2e6;
+    border-left: 4px solid #f39c12;
+}
+
+.charts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    width: 100%;
+}
+
+.chart-card {
+    flex: 1 1 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Cartões com o gráfico e a tabela */
+.card {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+}
+
+/* Títulos */
+.card h3 {
+    font-size: 20px;
+    font-weight: bold;
+    color: #34495e;
+    margin-bottom: 15px;
+}
+
+/* Gráfico */
+canvas {
+    max-width: 100%;
+    margin: auto;
+}
+
+/* Tabela de Previsão */
+#tabela-previsao {
+    width: 100%;
+    margin-top: 10px;
+    border-collapse: collapse;
+}
+
+/* Cabeçalhos da tabela */
+#tabela-previsao th {
+    background-color: #3498db;
+    color: #ffffff;
+    padding: 10px;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 14px;
+}
+
+/* Células da tabela */
+#tabela-previsao td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    font-size: 14px;
+    color: #555;
+    text-align: center;
+}
+
+/* Cor de fundo alternada para as linhas */
+#tabela-previsao tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+#tabela-previsao tbody tr:hover {
+    background-color: #f2f2f2;
+}
+#lucro-total{
+    margin-top: 1vw;
+    color: #27ae60;
+}
+#graficoLucro{
+    width: 75%;
 }

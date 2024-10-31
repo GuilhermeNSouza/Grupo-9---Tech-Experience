@@ -5,7 +5,7 @@ from datetime import datetime
 import pandas as pd
 
 app = Flask(__name__)
-CORS(app)  # Habilita CORS para permitir requisições de origens diferentes
+CORS(app)  # Cors e para aceitar outras portas para chamadas ainda esta aberta pois esta em modo teste mas como e um sistema de um mercado iria apenas aceitar requisiçoes da rede do mercado 
 
 DATABASE = 'database.db'
 # Função para conectar ao banco de dados
@@ -17,27 +17,28 @@ def connection_database():
 @app.route('/api/vendas', methods=['GET'])
 def obter_vendas():
     try:
-        # Obtém os parâmetros de data e valor mínimo da requisição
+        # Obtém os parâmetros de data da requisição
         data_inicio = request.args.get('data_inicio')
         data_fim = request.args.get('data_fim')
-        valor_minimo = request.args.get('valor_minimo', type=float, default=0.0) 
+        
+        # Verifica se os parâmetros de data estão presentes
+        if not data_inicio or not data_fim:
+            return jsonify({'erro': 'Parâmetros data_inicio e data_fim são obrigatórios.'}), 400
+
+        # Tenta converter as datas para o formato correto
         try:
             data_inicio_dt = datetime.strptime(data_inicio, '%Y-%m-%d')
             data_fim_dt = datetime.strptime(data_fim, '%Y-%m-%d')
-            data_atual = datetime.now()
-            
-            if data_inicio_dt > data_atual or data_fim_dt > data_atual:
-                return jsonify({'erro': 'Datas futuras não são permitidas.'}), 400
         except ValueError:
-            return jsonify({'erro': 'Formato de data inválido. Utilize AAAA-MM-DD.'}), 400
-        
+            return jsonify({'erro': 'Formato de data inválido. Use AAAA-MM-DD.'}), 400
+
+        # Converte as datas para timestamp
         data_inicio_timestamp = int(data_inicio_dt.timestamp() * 1000)
         data_fim_timestamp = int(data_fim_dt.timestamp() * 1000)
-        
+
+        # Conexão ao banco de dados e execução da query
         conn = connection_database()
         cursor = conn.cursor()
-        
-
         query = '''
             SELECT
                 p.nome AS nome_produto,
@@ -54,12 +55,10 @@ def obter_vendas():
                 v.dataVenda BETWEEN ? AND ?
             GROUP BY
                 p.id, p.nome
-            HAVING
-                total_vendas >= ?
             ORDER BY
                 quantidade_vendida DESC;
         '''
-        cursor.execute(query, (data_inicio_timestamp, data_fim_timestamp, valor_minimo))
+        cursor.execute(query, (data_inicio_timestamp, data_fim_timestamp))
         resultado = cursor.fetchall()
         
         vendas = []
@@ -75,8 +74,9 @@ def obter_vendas():
         
         return jsonify(vendas), 200
     except Exception as e:
-        print(f"Erro: {e}")
+        print(f"Erro na rota /api/vendas: {e}")
         return jsonify({'erro': str(e)}), 500
+
 @app.route('/api/notificacoes-validade', methods=['GET'])
 def notificacoes_validade():
     try:
@@ -112,11 +112,6 @@ def notificacoes_validade():
         print(f"Erro: {e}")
         return jsonify({'erro': str(e)}), 500
 def prever_demanda_mensal_simples(dados_vendas, periodo_previsao):
-    """
-    Função para prever a demanda com uma média dos últimos dados históricos.
-    Se o valor da previsão for negativo, ele será substituído por zero.
-    """
-    # Calcula a média dos últimos valores de vendas
     media_demanda = dados_vendas['quantidade'].tail(30).mean()
     
     # Multiplica a média pelo período de previsão (30 dias) para obter a previsão mensal
@@ -172,4 +167,4 @@ def previsao_demanda_mensal():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, port=8080)
+    app.run(debug=False, port=8080)

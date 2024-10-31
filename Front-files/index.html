@@ -6,11 +6,21 @@
     <link rel="stylesheet" href="css/styles.css">
     <!-- Font Awesome para ícones -->
     <script src="https://kit.fontawesome.com/55aafedf42.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Chart.js para os gráficos -->
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+
+
 </head>
 <body>
-    <!-- Sidebar Minimalista -->
     <div class="sidebar">
+        
         <ul class="sidebar-menu">
+            <li>
+                <a href="#" onclick="mostrarSecao('dashboard-container')">
+                    <i class="fas fa-home"></i>
+                    <span class="menu-text">Tela Inicial</span>
+                </a>
+            </li>
             <li>
                 <a href="#" onclick="mostrarSecao('relatorio-vendas')">
                     <i class="fas fa-chart-line"></i>
@@ -29,24 +39,60 @@
                     <span class="menu-text">Previsão de Demanda</span>
                 </a>
             </li>
-            <li>
-                <a href="#" onclick="mostrarSecao('notificacoes-validade')">
-                    <i class="fas fa-bell"></i>
-                    <span class="menu-text">Notificações de Validade</span>
-                </a>
-            </li>
         </ul>
     </div>
-
     <!-- Conteúdo Principal -->
     <div class="main-content">
         <header>
-            <h1>Supermercado Garibaldi - Inventário</h1>
+            <h1>Supermercado Garibaldi</h1>
         </header>
 
         <main>
+            <div id="dashboard-container" class="dashboard-container">
+                <!-- Cards de Informações -->
+                <div class="info-cards">
+                    <div class="info-card">
+                        <h3>Produto Mais Vendido</h3>
+                        <p id="produto-mais-vendido">Carregando...</p>
+                    </div>
+                    <div class="info-card">
+                        <h3>Lucro Total</h3>
+                        <p id="lucro-total">Carregando...</p>
+                    </div>
+                    <div class="info-card alerta-vencidos">
+                        <h3>Produtos Vencidos</h3>
+                        <p id="produtos-vencidos">Carregando...</p>
+                    </div>
+                    <div class="info-card alerta-validade">
+                        <h3>Alertas de Validade</h3>
+                        <p id="alertas-validade">Carregando...</p>
+                    </div>
+                </div>
+        
+                <!-- Gráficos -->
+                <div class="charts">
+                    <div class="chart-card">
+                            <h2>Previsão de Itens para o Próximo Mês</h2>
+                            <table id="tabela-previsao">
+                                <thead>
+                                    <tr>
+                                        <th>Produto</th>
+                                        <th>Quantidade Prevista</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="corpo-ranking-previsao">
+                                    <!-- Ranking de previsão será inserido aqui -->
+                                </tbody>
+                            </table>
+                    </div>
+                    <div class="chart-card">
+                        <h3>Distribuição de Lucro por Produto</h3>
+                        <canvas id="graficoLucro"></canvas>
+                    </div>
+                </div>
+            </div>
             <!-- Relatório de Vendas por Período -->
-            <section id="relatorio-vendas">
+            <section id="relatorio-vendas" style="display: none;">
                 <h2>Relatório de Vendas</h2>
                 <form id="form-relatorio">
                     <div class="form-group">
@@ -83,20 +129,18 @@
                     </table>                    
                 </div>
             </section>
+
+            <!-- Alerta de Validade -->
             <section id="alerta-validade" style="display: none;">
                 <input type="text" id="filtro-notificacoes" placeholder="Pesquisar produto..." onkeyup="filtrarNotificacoes()">
-
                 <h2>Alerta de Validade</h2>
-                <div id="lista-notificacoes">
-                </div>
+                <div id="lista-notificacoes"></div>
             </section>
-    
+
             <!-- Previsão de Demanda -->
             <section id="previsao-demanda" style="display: none;">
                 <h2>Previsão de Demanda para o Próximo Mês</h2>
-
                 <button id="botao-previsao">Carregar Previsões</button>
-            
                 <table id="tabela-previsao-todos">
                     <thead>
                         <tr>
@@ -109,13 +153,10 @@
                     </tbody>
                 </table>
             </section>
-            <section id="notificacoes-validade" style="display: none;">
-                <h2>Notificações de Validade</h2>
-                <div id="lista-notificacoes">
-                </div>
-            </section>
+
         </main>
     </div>
+    <script src="js/dashboard.js"></script>
     <script src="js/scripts.js"></script>
     <script src="js/relatorio_vendas.js"></script>
     <script src="js/buscar_notificacoes.js"></script>

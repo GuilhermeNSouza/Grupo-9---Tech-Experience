@@ -17,32 +17,46 @@ async function buscarNotificacoes() {
 
         const hoje = new Date();
 
-        // Armazena notificações para pesquisa
+        // Armazena notificações para pesquisa e exibe alertas especiais para produtos perto de vencer e já vencidos
         produtos.forEach(produto => {
-            const dataValidade = new Date(Number(produto.validade));
-            const diasRestantes = Math.ceil((dataValidade - hoje) / (1000 * 60 * 60 * 24));
+            const dataValidade = new Date(Number(produto.validade)); // Converte o timestamp para uma data
+            const diasRestantes = Math.ceil((dataValidade - hoje) / (1000 * 60 * 60 * 24)); // Calcula os dias restantes
 
             const notificacao = document.createElement('div');
             notificacao.className = 'notificacao';
 
-            if (diasRestantes <= 7) {
+            // Define a cor do alerta dependendo dos dias restantes
+            if (diasRestantes < 0) { // Produto já vencido
+                notificacao.classList.add('alerta-vencido');
+                notificacao.innerHTML = `
+                    <h3>${produto.nome}</h3>
+                    <p>Quantidade em estoque: ${produto.quantidade}</p>
+                    <p style="color: red;"><strong>Produto Vencido!</strong>  Venceu em: ${dataValidade.toLocaleDateString('pt-BR')}</p>
+                `;
+            } else if (diasRestantes <= 10) { // Produto com menos de 10 dias para vencer
                 notificacao.classList.add('alerta-validade');
+                notificacao.innerHTML = `
+                    <h3>${produto.nome}</h3>
+                    <p>Quantidade em estoque: ${produto.quantidade}</p>
+                    <p>Data de validade: ${dataValidade.toLocaleDateString('pt-BR')} (<span style="color: orange;">${diasRestantes} dias restantes</span>)</p>
+                `;
+            } else {
+                // Exibe normalmente produtos com validade acima de 10 dias
+                notificacao.innerHTML = `
+                    <h3>${produto.nome}</h3>
+                    <p>Quantidade em estoque: ${produto.quantidade}</p>
+                    <p>Data de validade: ${dataValidade.toLocaleDateString('pt-BR')} (${diasRestantes} dias restantes)</p>
+                `;
             }
 
-            const dataValidadeFormatada = dataValidade.toLocaleDateString('pt-BR');
-
-            notificacao.innerHTML = `
-                <h3>${produto.nome}</h3>
-                <p>Quantidade em estoque: ${produto.quantidade}</p>
-                <p>Data de validade: ${dataValidadeFormatada} (${diasRestantes} dias restantes)</p>
-            `;
-            listaNotificacoes.appendChild(notificacao);
+            listaNotificacoes.appendChild(notificacao); // Adiciona a notificação na lista
         });
     } catch (error) {
         console.error('Erro ao buscar notificações de validade:', error);
     }
 }
 
+// Função para filtrar notificações com base no nome do produto
 function filtrarNotificacoes() {
     const input = document.getElementById('filtro-notificacoes').value.toLowerCase();
     const notificacoes = document.querySelectorAll('#lista-notificacoes .notificacao');
@@ -57,4 +71,5 @@ function filtrarNotificacoes() {
     });
 }
 
+// Chama a função de busca de notificações ao carregar a página
 document.addEventListener('DOMContentLoaded', buscarNotificacoes);
