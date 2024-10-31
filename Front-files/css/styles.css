@@ -59,7 +59,7 @@ body {
 }
 
 header h1 {
-    font-size: 28px;
+    font-size: 38px;
     color: #2c3e50;
     margin-bottom: 20px;
     font-weight: bold;
@@ -128,7 +128,7 @@ button:hover {
 .styled-table thead tr {
     background-color: #34495e;
     color: #ffffff;
-    text-align: left;
+    text-align: center;
 }
 
 .styled-table th, .styled-table td {
@@ -230,4 +230,20 @@ button:hover {
     border-color: #3498db; 
     box-shadow: 0 0 5px rgba(52, 152, 219, 0.5); 
     outline: none; 
+}
+#tabela-previsao-todos {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+#tabela-previsao-todos th, #tabela-previsao-todos td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+}
+
+#tabela-previsao-todos th {
+    background-color: #f2f2f2;
+    font-weight: bold;
 }

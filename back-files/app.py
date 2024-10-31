@@ -1,7 +1,8 @@
 from flask import Flask, jsonify, request
 import sqlite3
 from flask_cors import CORS
-from datetime import datetime, timedelta
+from datetime import datetime
+import pandas as pd
 
 app = Flask(__name__)
 CORS(app)  # Habilita CORS para permitir requisições de origens diferentes
@@ -79,7 +80,6 @@ def obter_vendas():
 @app.route('/api/notificacoes-validade', methods=['GET'])
 def notificacoes_validade():
     try:
-        # Conecta ao banco de dados
         conn = connection_database()
         cursor = conn.cursor()
         
@@ -111,6 +111,65 @@ def notificacoes_validade():
     except Exception as e:
         print(f"Erro: {e}")
         return jsonify({'erro': str(e)}), 500
+def prever_demanda_mensal_simples(dados_vendas, periodo_previsao):
+    """
+    Função para prever a demanda com uma média dos últimos dados históricos.
+    Se o valor da previsão for negativo, ele será substituído por zero.
+    """
+    # Calcula a média dos últimos valores de vendas
+    media_demanda = dados_vendas['quantidade'].tail(30).mean()
+    
+    # Multiplica a média pelo período de previsão (30 dias) para obter a previsão mensal
+    total_previsto = max(0, round(media_demanda * periodo_previsao))  # Garante que seja no mínimo zero
+    return total_previsto
+
+@app.route('/api/previsao_demanda_mensal', methods=['GET'])
+def previsao_demanda_mensal():
+    try:
+        # Define o período de previsão para 1 mês (30 dias)
+        periodo_previsao = 30
+
+        # Conecta ao banco e busca os dados históricos de vendas de todos os produtos
+        conn = connection_database()
+        query = '''
+            SELECT p.nome AS produtoNome, v.dataVenda AS data, vp.quantidadeProduto AS quantidade
+            FROM VendaProduto vp
+            JOIN Venda v ON vp.vendaId = v.id
+            JOIN Produto p ON vp.produtoId = p.id
+            ORDER BY p.nome, v.dataVenda
+        '''
+        dados = pd.read_sql_query(query, conn)
+        conn.close()
+        
+        # Verifica se os dados foram carregados corretamente
+        print("Dados carregados do banco:", dados.head())
+
+        # Dicionário para armazenar previsões por produto
+        previsoes_mensais = {}
+
+        # Processar previsões por produto
+        for produto_nome, dados_produto in dados.groupby('produtoNome'):
+            if len(dados_produto) < 10:
+                previsoes_mensais[produto_nome] = {'erro': 'Dados insuficientes para previsão.'}
+                continue
+
+            # Calcula a previsão agregada para o próximo mês usando média simples
+            total_previsto = prever_demanda_mensal_simples(dados_produto, periodo_previsao)
+                
+            # Armazena o total previsto para o produto
+            previsoes_mensais[produto_nome] = {
+                'produto': produto_nome,
+                'total_previsto_proximo_mes': total_previsto
+            }
+
+        # Transforma o dicionário de previsões em uma lista e ordena pela quantidade total prevista
+        previsoes_ordenadas = sorted(previsoes_mensais.values(), key=lambda x: x.get('total_previsto_proximo_mes', 0), reverse=True)
+
+        return jsonify(previsoes_ordenadas), 200
+    except Exception as e:
+        print(f"Erro geral na rota /api/previsao_demanda_mensal: {e}")
+        return jsonify({'erro': str(e)}), 500
+
 
 if __name__ == '__main__':
     app.run(debug=True, port=8080)

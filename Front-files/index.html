@@ -61,22 +61,26 @@
                     
                     <button id="Gerar_relatorio" type="button">Gerar Relatório</button>
                 </form>
-
-                <!-- Tabela Estilizada -->
                 <div id="resultado-relatorio" class="styled-table">
                     <table id="tabela-relatorio">
                         <thead>
                             <tr>
                                 <th>Produto</th>
                                 <th>Estoque Atual</th>
-                                <th>Quantidade Vendida</th>
-                                <th>Total de Vendas</th>
+                                <th>
+                                    Quantidade Vendida
+                                    <button id="ordenar-quantidade" onclick="ordenarPorQuantidadeVendida()">⬆⬇</button>
+                                </th>
+                                <th>
+                                    Total Valor
+                                    <button id="ordenar-valor" onclick="ordenarPorTotalValor()">⬆⬇</button>
+                                </th>
                             </tr>
                         </thead>
                         <tbody id="relatorio-corpo">
                             <!-- Dados do relatório serão inseridos aqui -->
                         </tbody>
-                    </table>
+                    </table>                    
                 </div>
             </section>
             <section id="alerta-validade" style="display: none;">
@@ -89,8 +93,21 @@
     
             <!-- Previsão de Demanda -->
             <section id="previsao-demanda" style="display: none;">
-                <h2>Previsão de Demanda</h2>
-                <!-- Conteúdo da seção de Previsão de Demanda -->
+                <h2>Previsão de Demanda para o Próximo Mês</h2>
+
+                <button id="botao-previsao">Carregar Previsões</button>
+            
+                <table id="tabela-previsao-todos">
+                    <thead>
+                        <tr>
+                            <th>Produto</th>
+                            <th>Quantidade Prevista (Próximo Mês)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="corpo-previsao-todos">
+                        <!-- As previsões serão inseridas aqui -->
+                    </tbody>
+                </table>
             </section>
             <section id="notificacoes-validade" style="display: none;">
                 <h2>Notificações de Validade</h2>
@@ -102,5 +119,6 @@
     <script src="js/scripts.js"></script>
     <script src="js/relatorio_vendas.js"></script>
     <script src="js/buscar_notificacoes.js"></script>
+    <script src="js/previsao_demanda.js"></script>
 </body>
 </html>
