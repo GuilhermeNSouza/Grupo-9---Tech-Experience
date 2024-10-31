@@ -12,19 +12,19 @@
     <div class="sidebar">
         <ul class="sidebar-menu">
             <li>
-                <a href="#relatorio-vendas">
+                <a href="#" onclick="mostrarSecao('relatorio-vendas')">
                     <i class="fas fa-chart-line"></i>
                     <span class="menu-text">Relatório de Vendas</span>
                 </a>
             </li>
             <li>
-                <a href="#alerta-validade">
+                <a href="#" onclick="mostrarSecao('alerta-validade')">
                     <i class="fas fa-exclamation-triangle"></i>
                     <span class="menu-text">Alerta de Validade</span>
                 </a>
             </li>
             <li>
-                <a href="#previsao-demanda">
+                <a href="#" onclick="mostrarSecao('previsao-demanda')">
                     <i class="fas fa-clipboard-list"></i>
                     <span class="menu-text">Previsão de Demanda</span>
                 </a>
@@ -72,6 +72,16 @@
                         </tbody>
                     </table>
                 </div>
+            </section>
+            <section id="alerta-validade" style="display: none;">
+                <h2>Alerta de Validade</h2>
+                <!-- Conteúdo da seção de Alerta de Validade -->
+            </section>
+    
+            <!-- Previsão de Demanda -->
+            <section id="previsao-demanda" style="display: none;">
+                <h2>Previsão de Demanda</h2>
+                <!-- Conteúdo da seção de Previsão de Demanda -->
             </section>
         </main>
     </div>
