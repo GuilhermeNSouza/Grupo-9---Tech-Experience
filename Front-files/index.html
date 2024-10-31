@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Supermercado Garibaldi - Gestão de Demanda</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <!-- Font Awesome para ícones -->
+    <script src="https://kit.fontawesome.com/55aafedf42.js" crossorigin="anonymous"></script>
+    <!-- Chart.js para gráficos -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Sidebar Minimalista -->
+    <div class="sidebar">
+        <ul class="sidebar-menu">
+            <li>
+                <a href="#relatorio-vendas">
+                    <i class="fas fa-chart-line"></i>
+                    <span class="menu-text">Relatório de Vendas</span>
+                </a>
+            </li>
+            <li>
+                <a href="#alerta-validade">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span class="menu-text">Alerta de Validade</span>
+                </a>
+            </li>
+            <li>
+                <a href="#previsao-demanda">
+                    <i class="fas fa-clipboard-list"></i>
+                    <span class="menu-text">Previsão de Demanda</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Conteúdo Principal -->
+    <div class="main-content">
+        <header>
+            <h1>Supermercado Garibaldi</h1>
+        </header>
+
+        <main>
+            <!-- Relatório de Vendas por Período -->
+            <section id="relatorio-vendas">
+                <h2>Relatório de Vendas</h2>
+                <form id="form-relatorio">
+                    <div class="form-group">
+                        <label for="start_date">Data Inicial:</label>
+                        <input type="date" id="start_date" name="start_date" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="end_date">Data Final:</label>
+                        <input type="date" id="end_date" name="end_date" required>
+                    </div>
+                    
+                    <button type="submit">Gerar Relatório</button>
+                </form>
+                <div id="resultado-relatorio"></div>
+                <canvas id="chart-relatorio" style="display:none; max-width: 100%; margin-top: 20px;"></canvas>
+            </section>
+
+            <!-- Alerta de Produtos Próximos da Validade -->
+            <section id="alerta-validade">
+                <h2>Alerta de Validade</h2>
+                <button id="btn-alerta">Verificar Alertas</button>
+                <div id="resultado-alerta"></div>
+            </section>
+
+            <!-- Previsão de Demanda -->
+            <section id="previsao-demanda">
+                <h2>Previsão de Demanda</h2>
+                <form id="form-previsao">
+                    <div class="form-group">
+                        <label for="produto_id">ID do Produto:</label>
+                        <input type="number" id="produto_id" name="produto_id" required min="1">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="periodo">Período (dias):</label>
+                        <input type="number" id="periodo" name="periodo" value="30" min="1">
+                    </div>
+                    
+                    <button type="submit">Obter Previsão</button>
+                </form>
+                <div id="resultado-previsao"></div>
+                <canvas id="chart-previsao" style="display:none; max-width: 100%; margin-top: 20px;"></canvas>
+            </section>
+        </main>
+
+    </div>
+
+    <script src="js/scripts.js"></script>
+</body>
+</html>

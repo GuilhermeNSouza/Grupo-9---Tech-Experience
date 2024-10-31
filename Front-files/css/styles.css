@@ -1,0 +1,284 @@
+/* frontend/css/styles.css */
+
+/* Reset básico */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* Corpo da página */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f4f4;
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Sidebar Minimalista */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 60px;
+    height: 100%;
+    background-color: #343a40;
+    transition: width 0.3s;
+    overflow: hidden;
+    z-index: 1000;
+}
+
+.sidebar:hover {
+    width: 220px;
+}
+
+.sidebar-menu {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    padding: 20px 0;
+}
+
+.sidebar-menu li {
+    padding: 20px 0;
+}
+
+.sidebar-menu li a {
+    color: #fff;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    transition: background-color 0.3s;
+}
+
+.sidebar-menu li a:hover {
+    background-color: #495057;
+}
+
+.sidebar-menu li a i {
+    font-size: 1.2em;
+    min-width: 30px;
+}
+
+.menu-text {
+    opacity: 0;
+    white-space: nowrap;
+    transition: opacity 0.3s;
+}
+
+.sidebar:hover .menu-text {
+    opacity: 1;
+    margin-left: 10px;
+}
+
+/* Conteúdo Principal */
+.main-content {
+    margin-left: 60px;
+    padding: 20px;
+    width: 100%;
+    transition: margin-left 0.3s;
+}
+
+.sidebar:hover ~ .main-content {
+    margin-left: 200px;
+}
+
+header {
+    background-color: #1abc9c;
+    color: #fff;
+    padding: 15px 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+header h1 {
+    font-size: 1.8em;
+    text-align: center;
+}
+
+/* Seções */
+main {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+section {
+    background-color: #fff;
+    padding: 25px 30px;
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+}
+
+section h2 {
+    color: #1abc9c;
+    margin-bottom: 20px;
+    font-size: 1.4em;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #333;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1em;
+}
+
+button {
+    padding: 12px 25px;
+    background-color: #1abc9c;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #218838;
+}
+
+/* Tabelas */
+#resultado-relatorio table,
+#resultado-previsao table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 25px;
+}
+
+#resultado-relatorio th,
+#resultado-relatorio td,
+#resultado-previsao th,
+#resultado-previsao td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: center;
+}
+
+#resultado-relatorio th,
+#resultado-previsao th {
+    background-color: #1abc9c;
+    color: white;
+}
+
+/* Alertas de Validade */
+#resultado-alerta ul {
+    list-style: none;
+    padding: 0;
+}
+
+#resultado-alerta li {
+    background-color: #ffc107;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* Feedback Visual */
+.error {
+    color: #dc3545;
+    background-color: #f8d7da;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+.success {
+    color: #155724;
+    background-color: #d4edda;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+/* Gráficos */
+canvas {
+    max-width: 100%;
+    margin-top: 20px;
+}
+
+/* Spinner */
+.spinner {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #1abc9c;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    animation: spin 1s linear infinite;
+    margin: 20px auto;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Footer */
+footer {
+    background-color: #1abc9c;
+    color: #fff;
+    text-align: center;
+    padding: 15px 20px;
+    border-radius: 8px;
+    margin-top: 30px;
+    box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 60px;
+    }
+
+    .sidebar:hover {
+        width: 200px;
+    }
+
+    .sidebar-menu li a {
+        font-size: 1em;
+    }
+
+    .menu-text {
+        font-size: 0.9em;
+    }
+
+    header h1 {
+        font-size: 1.5em;
+    }
+
+    main {
+        padding: 10px;
+    }
+
+    section {
+        padding: 20px;
+    }
+
+    .form-group input {
+        padding: 8px 12px;
+    }
+
+    button {
+        width: 100%;
+        padding: 10px 0;
+    }
+
+    footer {
+        position: relative;
+    }
+}
