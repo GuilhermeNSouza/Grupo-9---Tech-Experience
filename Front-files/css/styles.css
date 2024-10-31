@@ -89,6 +89,9 @@ h2 {
     color: #333;
     font-weight: bold;
 }
+.vendido-mais{
+    color: #f39c12;
+}
 
 input[type="date"] {
     padding: 6px 10px;
@@ -100,7 +103,7 @@ input[type="date"] {
 button {
     background-color: #27ae60;
     color: white;
-    padding: 10px 15px;
+    padding: 12px 15px;
     border: none;
     border-radius: 4px;
     font-weight: bold;
@@ -214,7 +217,7 @@ button:hover {
 .alerta-validade h3 {
     color: #e74c3c;
 }
-#filtro-notificacoes {
+.input-filtro {
     width: 100%;
     max-width: 300px;
     padding: 10px;
@@ -227,7 +230,7 @@ button:hover {
 }
 
 
-#filtro-notificacoes:focus {
+.input-filtro:focus {
     border-color: #3498db; 
     box-shadow: 0 0 5px rgba(52, 152, 219, 0.5); 
     outline: none; 
@@ -336,6 +339,7 @@ button:hover {
 .chart-card {
     flex: 1 1 300px;
     display: flex;
+    margin-top: 1vw;
     align-items: center;
     justify-content: center;
     flex-direction: column;
@@ -409,5 +413,6 @@ canvas {
     color: #27ae60;
 }
 #graficoLucro{
-    width: 75%;
+    width: 90%;
+    height: 90%;
 }

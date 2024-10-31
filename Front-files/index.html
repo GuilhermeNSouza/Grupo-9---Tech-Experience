@@ -12,29 +12,28 @@
 
 </head>
 <body>
-    <div class="sidebar">
-        
+  <div class="sidebar">
         <ul class="sidebar-menu">
             <li>
-                <a href="#" onclick="mostrarSecao('dashboard-container')">
+                <a href="#" data-section="dashboard-container">
                     <i class="fas fa-home"></i>
                     <span class="menu-text">Tela Inicial</span>
                 </a>
             </li>
             <li>
-                <a href="#" onclick="mostrarSecao('relatorio-vendas')">
+                <a href="#" data-section="relatorio-vendas">
                     <i class="fas fa-chart-line"></i>
                     <span class="menu-text">Relatório de Vendas</span>
                 </a>
             </li>
             <li>
-                <a href="#" onclick="mostrarSecao('alerta-validade')">
+                <a href="#" data-section="alerta-validade">
                     <i class="fas fa-exclamation-triangle"></i>
                     <span class="menu-text">Alerta de Validade</span>
                 </a>
             </li>
             <li>
-                <a href="#" onclick="mostrarSecao('previsao-demanda')">
+                <a href="#" data-section="previsao-demanda">
                     <i class="fas fa-clipboard-list"></i>
                     <span class="menu-text">Previsão de Demanda</span>
                 </a>
@@ -52,38 +51,38 @@
                 <!-- Cards de Informações -->
                 <div class="info-cards">
                     <div class="info-card">
-                        <h3>Produto Mais Vendido</h3>
-                        <p id="produto-mais-vendido">Carregando...</p>
+                        <h2>Produto Mais Vendido</h2>
+                        <p style="color: #f5eda1; ;" class="vendido-mais" id="produto-mais-vendido">Carregando...</p>
                     </div>
                     <div class="info-card">
-                        <h3>Lucro Total</h3>
+                        <h2>Lucro Total</h2>
                         <p id="lucro-total">Carregando...</p>
                     </div>
                     <div class="info-card alerta-vencidos">
-                        <h3>Produtos Vencidos</h3>
+                        <h2>Produtos Vencidos</h2>
                         <p id="produtos-vencidos">Carregando...</p>
                     </div>
                     <div class="info-card alerta-validade">
-                        <h3>Alertas de Validade</h3>
+                        <h2>Alertas Validade</h2>
                         <p id="alertas-validade">Carregando...</p>
                     </div>
                 </div>
-        
+                
                 <!-- Gráficos -->
                 <div class="charts">
                     <div class="chart-card">
-                            <h2>Previsão de Itens para o Próximo Mês</h2>
-                            <table id="tabela-previsao">
-                                <thead>
-                                    <tr>
-                                        <th>Produto</th>
-                                        <th>Quantidade Prevista</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="corpo-ranking-previsao">
-                                    <!-- Ranking de previsão será inserido aqui -->
-                                </tbody>
-                            </table>
+                        <h2>Previsão de Itens para o Próximo Mês</h2>
+                        <table id="tabela-previsao">
+                            <thead>
+                                <tr>
+                                    <th>Produto</th>
+                                    <th>Quantidade Prevista</th>
+                                </tr>
+                            </thead>
+                            <tbody id="corpo-ranking-previsao">
+                                <!-- Ranking de previsão será inserido aqui -->
+                            </tbody>
+                        </table>
                     </div>
                     <div class="chart-card">
                         <h3>Distribuição de Lucro por Produto</h3>
@@ -91,22 +90,25 @@
                     </div>
                 </div>
             </div>
+        
             <!-- Relatório de Vendas por Período -->
             <section id="relatorio-vendas" style="display: none;">
                 <h2>Relatório de Vendas</h2>
+                <!-- Input para pesquisar produtos no relatório de vendas -->
+                <input type="text"  class="input-filtro" id="pesquisar-relatorio" placeholder="Pesquisar produto..." onkeyup="filtrarTabela('relatorio-corpo', this.value)">
+                
                 <form id="form-relatorio">
                     <div class="form-group">
                         <label for="data_comeco">Data Inicial:</label>
                         <input type="date" id="data_comeco" placeholder="Data de Início">
                     </div>
-                    
                     <div class="form-group">
                         <label for="fim_data">Data Final:</label>
                         <input type="date" id="fim_data" placeholder="Data de Fim">
                     </div>
-                    
                     <button id="Gerar_relatorio" type="button">Gerar Relatório</button>
                 </form>
+        
                 <div id="resultado-relatorio" class="styled-table">
                     <table id="tabela-relatorio">
                         <thead>
@@ -129,18 +131,21 @@
                     </table>                    
                 </div>
             </section>
-
+        
             <!-- Alerta de Validade -->
             <section id="alerta-validade" style="display: none;">
-                <input type="text" id="filtro-notificacoes" placeholder="Pesquisar produto..." onkeyup="filtrarNotificacoes()">
                 <h2>Alerta de Validade</h2>
+                <!-- Input para pesquisar produtos na lista de notificações -->
+                <input type="text" class="input-filtro" id="filtro-notificacoes" placeholder="Pesquisar produto..." onkeyup="filtrarTabela('lista-notificacoes', this.value)">
                 <div id="lista-notificacoes"></div>
             </section>
-
+        
             <!-- Previsão de Demanda -->
             <section id="previsao-demanda" style="display: none;">
                 <h2>Previsão de Demanda para o Próximo Mês</h2>
+                <!-- Input para pesquisar produtos na previsão de demanda -->
                 <button id="botao-previsao">Carregar Previsões</button>
+                <input  class="input-filtro" type="text" id="pesquisar-previsao-todos" placeholder="Pesquisar produto..." onkeyup="filtrarTabela('corpo-previsao-todos', this.value)">
                 <table id="tabela-previsao-todos">
                     <thead>
                         <tr>
