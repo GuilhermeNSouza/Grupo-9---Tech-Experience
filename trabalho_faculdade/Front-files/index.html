@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Supermercado Garibaldi - Gestão de Demanda</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <!-- Font Awesome para ícones -->
+    <script src="https://kit.fontawesome.com/55aafedf42.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Chart.js para os gráficos -->
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+
+
+</head>
+<body>
+    <div class="sidebar">
+        <ul class="sidebar-menu">
+            <li><a href="#" data-section="dashboard-container"><i class="fas fa-home"></i><span class="menu-text">Tela Inicial</span></a></li>
+            <li><a href="#" data-section="relatorio-vendas"><i class="fas fa-chart-line"></i><span class="menu-text">Relatório de Vendas</span></a></li>
+            <li><a href="#" data-section="alerta-validade"><i class="fas fa-exclamation-triangle"></i><span class="menu-text">Alerta de Validade</span></a></li>
+            <li><a href="#" data-section="previsao-demanda"><i class="fas fa-clipboard-list"></i><span class="menu-text">Previsão de Demanda</span></a></li>
+            <li><a href="#" data-section="container"><i class="fas fa-clipboard-list"></i><span class="menu-text">Cadastrar/buscar Produtos</span></a></li>
+        </ul>
+    </div>
+    <!-- Conteúdo Principal -->
+    <div class="main-content">
+        <header>
+            <h1 class="titulo">Supermercado Garibaldi</h1>
+        </header>
+
+        <main>
+            <div id="dashboard-container" class="dashboard-container">
+                <!-- Cards de Informações -->
+                <div class="info-cards">
+                    <div class="info-card">
+                        <h2>Produto Mais Vendido</h2>
+                        <p style="color: #f5eda1; ;" class="vendido-mais" id="produto-mais-vendido">Carregando...</p>
+                    </div>
+                    <div class="info-card">
+                        <h2>Lucro Total</h2>
+                        <p id="lucro-total">Carregando...</p>
+                    </div>
+                    <div class="info-card alerta-vencidos">
+                        <h2>Produtos Vencidos</h2>
+                        <p id="produtos-vencidos">Carregando...</p>
+                    </div>
+                    <div class="info-card alerta-validade">
+                        <h2>Alertas Validade</h2>
+                        <p id="alertas-validade">Carregando...</p>
+                    </div>
+                </div>
+                <section id="controle-estoque" style="display: none;">
+                <h2>Controle de Estoque</h2>
+                <!-- Relatório de Desperdício -->
+                <h3>Relatório de Desperdício</h3>
+                <table id="tabela-desperdicio" class="styled-table">
+                    <thead>
+                        <tr>
+                            <th>Produto</th>
+                            <th>Quantidade Desperdiçada</th>
+                            <th>Data de Validade</th>
+                        </tr>
+                    </thead>
+                    <tbody id="corpo-tabela-desperdicio"></tbody>
+                </table>
+
+                <!-- Gestão de Reposição -->
+                <h3>Gestão de Reposição</h3>
+                <form id="form-reposicao">
+                    <label for="produto-reposicao">Produto:</label>
+                    <input type="text" id="produto-reposicao" placeholder="Nome do produto">
+                    
+                    <label for="quantidade-reposicao">Quantidade:</label>
+                    <input type="number" id="quantidade-reposicao" placeholder="Quantidade a repor">
+                    
+                    <button type="button" onclick="registrarReposicao()">Registrar Reposição</button>
+                </form>
+
+                <!-- Tabela Dinâmica de Estoque -->
+                <h3>Tabela Dinâmica de Estoque</h3>
+                <input type="text" class="input-filtro" placeholder="Filtrar por categoria, marca ou fornecedor" id="filtro-estoque" onkeyup="filtrarTabela('tabela-estoque', this.value)">
+                
+                <table id="tabela-estoque" class="styled-table">
+                    <thead>
+                        <tr>
+                            <th>Produto</th>
+                            <th>Categoria</th>
+                            <th>Marca</th>
+                            <th>Fornecedor</th>
+                            <th>Estoque Atual</th>
+                            <th>Data de Reposição</th>
+                        </tr>
+                    </thead>
+                    <tbody id="corpo-tabela-estoque"></tbody>
+                </table>
+            </section>
+
+                <!-- Gráficos -->
+                <div class="charts">
+                    <div class="chart-card">
+                        <h2>Previsão de Itens para o Próximo Mês</h2>
+                        <table id="tabela-previsao">
+                            <thead>
+                                <tr>
+                                    <th>Produto</th>
+                                    <th>Quantidade Prevista</th>
+                                </tr>
+                            </thead>
+                            <tbody id="corpo-ranking-previsao">
+                                <!-- Ranking de previsão será inserido aqui -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="chart-card">
+                        <h3>Distribuição de Lucro por Produto</h3>
+                        <canvas id="graficoLucro"></canvas>
+                    </div>
+                    <div class="chart-card">
+                        <h2>Desperdício de Produtos por Vencimento</h2>
+                            <canvas id="graficoDesperdicio"></canvas>
+                        </div>
+                    </div>
+
+            </div>
+            <!-- Gráficos -->
+
+            <!-- Relatório de Vendas por Período -->
+            <section id="relatorio-vendas" style="display: none;">
+                <h2>Relatório de Vendas</h2>
+                <!-- Input para pesquisar produtos no relatório de vendas -->
+                <input type="text" class="input-filtro" id="pesquisar-relatorio" placeholder="Pesquisar produto..." onkeyup="filtrarTabela('relatorio-corpo', this.value)">
+                
+                <form id="form-relatorio">
+                    <div class="form-group">
+                        <label for="data_comeco">Data Inicial:</label>
+                        <input type="date" id="data_comeco" placeholder="Data de Início">
+                    </div>
+                    <div class="form-group">
+                        <label for="fim_data">Data Final:</label>
+                        <input type="date" id="fim_data" placeholder="Data de Fim">
+                    </div>
+                    <button id="Gerar_relatorio" type="button">Gerar Relatório</button>
+                </form>
+        
+                <div id="resultado-relatorio" class="styled-table">
+                    <table id="tabela-relatorio">
+                        <thead>
+                            <tr>
+                                <th>Produto</th>
+                                <th>Estoque Atual</th>
+                                <th>
+                                    Quantidade Vendida
+                                    <button id="ordenar-quantidade" onclick="ordenarPorQuantidadeVendida()">⬆⬇</button>
+                                </th>
+                                <th>
+                                    Total Valor
+                                    <button id="ordenar-valor" onclick="ordenarPorTotalValor()">⬆⬇</button>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody id="relatorio-corpo">
+                            <!-- Dados do relatório serão inseridos aqui -->
+                        </tbody>
+                    </table>                    
+                </div>
+            </section>
+            <section id="previsao-demanda" style="display: none;">
+                <h2>Previsão de Demanda Sazonal</h2>
+            
+                <div class="form-group">
+                    <label for="data_inicio_previsao">Data Início:</label>
+                    <input type="date" id="data_inicio_previsao" placeholder="Data de Início">
+                    <label for="data_fim_previsao">Data Fim:</label>
+                    <input type="date" id="data_fim_previsao" placeholder="Data de Fim">
+                </div>
+                
+                <!-- Botão para carregar previsões com base no intervalo de datas -->
+                <button id="botao-previsao">Carregar Previsões</button>
+            
+                <!-- Input para filtrar a tabela de previsão -->
+                <input class="input-filtro" type="text" id="pesquisar-previsao-todos" placeholder="Pesquisar produto..." onkeyup="filtrarTabelaPrevisao()">
+                
+                <table id="tabela-previsao-todos" >
+                    <thead>
+                        <tr>
+                            <th>Produto</th>
+                            <th>Quantidade Prevista (Próximo Mês)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="corpo-previsao-todos">
+                        <!-- As previsões serão inseridas aqui -->
+                    </tbody>
+                </table>
+            </section>
+            <!-- Alerta de Validade -->
+        <section id="alerta-validade" style="display: none;">
+            <h2>Alerta de Validade</h2>
+            <input type="text" class="input-filtro" id="filtro-notificacoes" placeholder="Pesquisar produto..." onkeyup="filtrarNotificacoes()">
+            <div id="lista-notificacoes"></div> <!-- Verifique se este elemento existe -->
+        </section>
+        <section id="sugestao-reposicao" style="display: none;">
+            <h2>Sugestão de Reposição</h2>
+            <table id="tabela-reposicao" class="styled-table">
+                <thead>
+                    <tr>
+                        <th>Produto</th>
+                        <th>Estoque Atual</th>
+                        <th>Quantidade Necessária</th>
+                    </tr>
+                </thead>
+                <tbody id="corpo-tabela-reposicao">
+                    <!-- As sugestões de reposição serão inseridas aqui -->
+                </tbody>
+            </table>
+            <button id="botao-reposicao" type="button">Carregar Sugestões de Reposição</button>
+        </section>
+        <div class="container" id="container" style="display: none;">
+            <h1>Cadastro de Produtos</h1>
+            <form id="formCadastro">
+                <input type="text" id="nome" placeholder="Nome do Produto" required>
+                <input type="number" step="0.01" id="preco" placeholder="Preço" required>
+                <input type="number" id="estoqueAtual" placeholder="Estoque Atual" required>
+                <input type="date" id="dataValidade" placeholder="Data de Validade" required>
+                <button type="submit">Cadastrar Produto</button>
+            </form>
+        
+            <h1>Consulta de Produtos</h1>
+            <input type="text" id="buscaNome" placeholder="Nome do Produto">
+            <button onclick="consultarProdutos()">Buscar</button>
+        
+            <h2>Resultados da Busca:</h2>
+            <ul id="listaProdutos"></ul>
+        </div>
+    
+        </div>
+        </main>
+    </div>
+    <script src="js/dashboard.js"></script>
+    <script src="js/scripts.js"></script>
+    <script src="js/relatorio_vendas.js"></script>
+    <script src="js/buscar_notificacoes.js"></script>
+    <script src="js/previsao_demanda.js"></script>
+    <script src="js/cadastrar-produto.js"></script>
+</body>
+</html>
